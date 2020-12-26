@@ -76,10 +76,10 @@ def SQLClass(db):
 
         @staticmethod
         def Login(name, password, token, meta):
-            id = Users.query.filter_by(name=name, password=password).first().ID
+            id = Users.query.filter_by(name=name, password=password).first()
             if id is not None:
-                exeClass.setToken(token, id, meta)
-                return id
+                exeClass.setToken(token, id.ID, meta)
+                return id.ID
 
         @staticmethod
         def Register(name, password):

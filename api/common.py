@@ -58,7 +58,7 @@ def register():
         abort(406)
 
     tmp = current_app.config['DB'].checkUser(request.form['name'].strip("    \""))
-    if tmp is None:
+    if tmp is not None:
         return jsonify({"ERROR": "Taki użytkownik już istnieje"})
 
     llen = 255 - len(request.form['name'].encode())
