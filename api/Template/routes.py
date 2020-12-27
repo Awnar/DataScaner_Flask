@@ -3,11 +3,11 @@ from sqlalchemy import exc
 
 api = Blueprint('api', __name__)
 
-MOD_NAME = "QR Scaner"
+MOD_NAME = "Remplate"
 
 
 @api.route('/', methods=['GET'])
-def QRgetAll():
+def DatagetAll():
     try:
         if g.usr is None:
             abort(403)
@@ -17,7 +17,7 @@ def QRgetAll():
 
 
 @api.route('/', methods=['POST'])
-def QRpost():
+def Datapost():
     try:
         if g.usr is None:
             abort(403)
@@ -27,7 +27,7 @@ def QRpost():
 
 
 @api.route('/<id>', methods=['GET'])
-def QRget(id):
+def Dataget(id):
     try:
         if g.usr is None:
             abort(403)
@@ -37,7 +37,7 @@ def QRget(id):
 
 
 @api.route('/<id>', methods=['DELETE'])
-def QRdelete(id):
+def Datadelete(id):
     try:
         if g.usr is None:
             abort(403)
@@ -47,7 +47,7 @@ def QRdelete(id):
 
 
 @api.route('/<id>', methods=['PUT'])
-def QRput(id):
+def Dataput(id):
     try:
         if g.usr is None:
             abort(403)
