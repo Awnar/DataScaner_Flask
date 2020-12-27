@@ -9,11 +9,15 @@ validity_deltatime = timedelta(hours=1)
 
 def home():
     DATA = {
-        "name": {
-            0: 'Skaner QR'
-        },
-        "url": {
-            0: '/QR'
+        # "name": {
+        #    0: 'Skaner QR'
+        # },
+        # "url": {
+        #    0: '/QR'
+        # }
+        0: {
+            'name': 'Skaner QR',
+            'url': '/QR'
         }
     }
     return jsonify(DATA)

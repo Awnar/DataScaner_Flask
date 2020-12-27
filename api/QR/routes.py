@@ -13,7 +13,7 @@ def QRgetAll():
             abort(403)
         return jsonify()
     except exc.SQLAlchemyError:
-        return jsonify({"ERROR": "Błąd"})
+        abort(500)
 
 
 @api.route('/QR', methods=['POST'])
@@ -23,7 +23,7 @@ def QRpost():
             abort(403)
         return jsonify()
     except exc.SQLAlchemyError:
-        return jsonify({"ERROR": "Błąd"})
+        abort(500)
 
 
 @api.route('/QR/<id>', methods=['GET'])
@@ -33,7 +33,7 @@ def QRget(id):
             abort(403)
         return jsonify()
     except exc.SQLAlchemyError:
-        return jsonify({"ERROR": "Błąd"})
+        abort(500)
 
 
 @api.route('/QR/<id>', methods=['DELETE'])
@@ -43,7 +43,7 @@ def QRdelete(id):
             abort(403)
         return jsonify()
     except exc.SQLAlchemyError:
-        return jsonify({"ERROR": "Błąd"})
+        abort(500)
 
 
 @api.route('/QR/<id>', methods=['PUT'])
@@ -53,4 +53,4 @@ def QRput(id):
             abort(403)
         return jsonify()
     except exc.SQLAlchemyError:
-        return jsonify({"ERROR": "Błąd"})
+        abort(500)
