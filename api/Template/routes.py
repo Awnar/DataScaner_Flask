@@ -1,9 +1,8 @@
 from flask import Blueprint, abort, jsonify, g
 from sqlalchemy import exc
 
-api = Blueprint('api', __name__)
-
-MOD_NAME = "Remplate"
+MOD_NAME = "Template"
+api = Blueprint('MOD_NAME', __name__)
 
 
 @api.route('/', methods=['GET'])

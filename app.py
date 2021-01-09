@@ -1,4 +1,6 @@
 import secrets
+import shutil
+from pathlib import Path
 
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -16,9 +18,11 @@ db = SQLAlchemy(app)
 app.config['DB'] = model.SQLClass(db)()
 
 import api
-from api.QR import api as api_alfa
+from api.QR import api as api_QR
+from api.Template import api as api_Template
 
-app.register_blueprint(api_alfa, url_prefix='/QR')
+app.register_blueprint(api_QR, url_prefix='/QR')
+app.register_blueprint(api_Template, url_prefix='/Template')
 
 
 @app.route('/')
@@ -59,5 +63,8 @@ def register():
 
 
 if __name__ == '__main__':
+    dirpath = Path('tmp')
+    if dirpath.exists() and dirpath.is_dir():
+        shutil.rmtree(dirpath)
     db.create_all()
     app.run(host='0.0.0.0')

@@ -1,3 +1,4 @@
+import os
 import secrets
 from datetime import timedelta, datetime
 from hashlib import sha512, sha256
@@ -12,6 +13,7 @@ def home():
         'endpoints': {
             0: {
                 'name': 'Template',
+                'url': '/Template'
             },
             1: {
                 'name': 'Skaner QR',
@@ -61,7 +63,7 @@ def register():
         abort(406)
 
     tmp = current_app.config['DB'].checkUser(request.form['name'].strip("    \""))
-    if tmp is not None:
+    if tmp is None:
         return jsonify({"ERROR": "Taki użytkownik już istnieje"})
 
     llen = 255 - len(request.form['name'].encode())
@@ -75,3 +77,21 @@ def register():
                                               hash, meta)
 
     return jsonify({"Authorization": hash})
+
+
+def tmpFileCreate(data, type="IMG", writemode="wb"):
+    path = os.path.join('tmp', type)
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    file_path = os.path.join(path, secrets.token_urlsafe(12))
+    f = open(file_path, writemode)
+    f.write(data)
+    f.close()
+
+    return file_path
+
+
+def tmpFileDel(file_path):
+    if os.path.exists(file_path):
+        os.remove(file_path)

@@ -38,14 +38,14 @@ def SQLClass(db):
         create = db.Column('Create Time', db.DateTime)
         update = db.Column('Update Time', db.DateTime)
 
-        def __init__(self, module_name, user_id, in_blob, in_des, out_blob, out_des):
+        def __init__(self, module_name, user_id, in_blob, in_des, out_blob, out_des, create):
             self.user_id = user_id
             self.module_name = module_name
             self.in_blob = in_blob
             self.in_des = in_des
             self.out_blob = out_blob
             self.out_des = out_des
-            self.create = self.update = datetime.now()
+            self.create = self.update = create
 
     class exeClass:
         @staticmethod
@@ -93,8 +93,8 @@ def SQLClass(db):
             return exeClass.Login(name, password, token, meta)
 
         @staticmethod
-        def setData(module_name, user_id, in_blob, in_des, out_blob, out_des):
-            var = Data(module_name, user_id, in_blob, in_des, out_blob, out_des)
+        def setData(module_name, user_id, in_blob, in_des, out_blob, out_des, create):
+            var = Data(module_name, user_id, in_blob, in_des, out_blob, out_des, create)
             db.session.add(var)
             db.session.commit()
 
