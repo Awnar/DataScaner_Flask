@@ -32,20 +32,31 @@ def SQLClass(db):
         user_id = db.Column('User ID', db.Integer, ForeignKey("users.ID"), nullable=False)
         module_name = db.Column('mod', db.Text, nullable=False)
         in_blob = db.Column('input', db.BLOB)
-        in_des = db.Column("in_type", db.JSON)
+        in_typ = db.Column("in_type", db.Text)
         out_blob = db.Column('output', db.BLOB)
-        out_text = db.Column("out_type", db.JSON)
+        out_typ = db.Column("out_type", db.Text)
         create = db.Column('Create Time', db.DateTime)
         update = db.Column('Update Time', db.DateTime)
 
-        def __init__(self, module_name, user_id, in_blob, in_des, out_blob, out_des, create):
+        def __init__(self, module_name, user_id, in_blob, in_typ, out_blob, out_typ, create):
             self.user_id = user_id
             self.module_name = module_name
             self.in_blob = in_blob
-            self.in_des = in_des
+            self.in_typ = in_typ
             self.out_blob = out_blob
-            self.out_des = out_des
+            self.out_typ = out_typ
             self.create = self.update = create
+
+        def toJSON(self):
+            return {"server_ID": self.id,
+                    "user_id": self.user_id,
+                    "module_name": self.module_name,
+                    "in_blob": self.in_blob.decode(),
+                    "in_blob_type": self.in_typ,
+                    "out_blob": self.out_blob.decode(),
+                    "out_blob_type": self.out_typ,
+                    "create": self.create,
+                    "update": self.update}
 
     class exeClass:
         @staticmethod
@@ -119,7 +130,9 @@ def SQLClass(db):
             db.session.commit()
 
         @staticmethod
-        def getAllData(module_name, user_id):
-            return Data.query.filter_by(user_id=user_id, module_name=module_name).all()
+        def getAllData(module_name, user_id, lastupdate=None):
+            if lastupdate is None:
+                return Data.query.filter_by(user_id=user_id, module_name=module_name).all()
+            return Data.query.filter_by(user_id=user_id, module_name=module_name).filter(Data.update >= lastupdate).all()
 
     return exeClass

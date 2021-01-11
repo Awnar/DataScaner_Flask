@@ -18,7 +18,15 @@ def QRgetAll():
     try:
         if g.usr is None:
             abort(403)
-        return jsonify()
+        time = datetime.now()
+        if 'lastupdate' in request.values.dicts:
+            res = current_app.config['DB'].getAllData(MOD_NAME, g.usr, request.values.dicts['lastupdate'])
+        else:
+            res = current_app.config['DB'].getAllData(MOD_NAME, g.usr)
+        json = []
+        for obj in res:
+            json.append(obj.toJSON())
+        return jsonify({"Data": json, "TIME": time})
     except exc.SQLAlchemyError:
         abort(500)
 
@@ -45,16 +53,16 @@ def QRpost():
         time = datetime.now()
         current_app.config['DB'].setData(MOD_NAME, g.usr, str.encode(Json['in_blob']), Json['in_blob_type'].strip('"'),
                                          data, "TXT", time)
-
-        return jsonify({
-            'in_blob': Json['in_blob'],
-            'in_blob_type': Json['in_blob_type'],
-            'out_blob': data,
-            'out_blob_type': 'txt',
-            'crete': time,
-            'update': time
-        })
-    except exc.SQLAlchemyError as e:
+        #return jsonify({
+        #    'in_blob': Json['in_blob'],
+        #    'in_blob_type': Json['in_blob_type'],
+        #    'out_blob': data,
+        #    'out_blob_type': 'txt',
+        #    'crete': time,
+        #    'update': time
+        #})
+        return  jsonify()
+    except exc.SQLAlchemyError:
         abort(500)
 
 

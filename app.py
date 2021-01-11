@@ -2,7 +2,7 @@ import secrets
 import shutil
 from pathlib import Path
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, abort, g
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 
@@ -60,6 +60,13 @@ def register():
         return api.register()
     except exc.SQLAlchemyError:
         return jsonify({"ERROR": "Błąd rejestracji"})
+
+@app.route('/Test', methods=['GET'])
+def test():
+        if g.usr is None:
+            abort(403)
+        return jsonify({"OK": "OK"})
+
 
 
 if __name__ == '__main__':
