@@ -51,9 +51,9 @@ def SQLClass(db):
             return {"server_ID": self.id,
                     "user_id": self.user_id,
                     "module_name": self.module_name,
-                    "in_blob": self.in_blob.decode(),
+                    "in_blob": self.in_blob.decode() if self.in_blob is not None else None,
                     "in_blob_type": self.in_typ,
-                    "out_blob": self.out_blob.decode(),
+                    "out_blob": self.out_blob.decode() if self.out_blob is not None else None,
                     "out_blob_type": self.out_typ,
                     "create": self.create,
                     "update": self.update}

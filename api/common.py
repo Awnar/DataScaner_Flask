@@ -16,7 +16,7 @@ def home():
                 'url': '/Template'
             },
             1: {
-                'name': 'Skaner QR',
+                'name': 'Bar Skaner',
                 'url': '/QR'
             }
         }
@@ -47,7 +47,8 @@ def login():
                                               sha256(request.form['pass'].strip("    \"").encode('utf-8')).hexdigest(),
                                               hash, meta)
         if user is None:
-            abort(403)
+            #abort(403)
+            return jsonify({"ERROR": "Taki użytkownik nie istnieje"})
         return jsonify({"Authorization": hash})
 
 
@@ -79,12 +80,12 @@ def register():
     return jsonify({"Authorization": hash})
 
 
-def tmpFileCreate(data, type="IMG", writemode="wb"):
+def tmpFileCreate(data, type="IMG", writemode="wb", extension=""):
     path = os.path.join('tmp', type)
     if not os.path.exists(path):
         os.makedirs(path)
 
-    file_path = os.path.join(path, secrets.token_urlsafe(12))
+    file_path = os.path.join(path, secrets.token_urlsafe(12)+extension)
     f = open(file_path, writemode)
     f.write(data)
     f.close()

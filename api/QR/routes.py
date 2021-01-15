@@ -2,6 +2,7 @@ import base64
 import json
 from datetime import datetime
 
+import cv2
 from PIL import Image
 from flask import Blueprint, abort, jsonify, g, request, current_app
 from pyzbar.pyzbar import decode
@@ -43,25 +44,33 @@ def QRpost():
         if 'in_blob' and 'in_blob_type' not in Json:
             abort(406)
 
-        file = tmpFileCreate(base64.decodebytes(str.encode(Json["in_blob"])))
+        time = datetime.now()
+        file = tmpFileCreate(base64.decodebytes(str.encode(Json["in_blob"])), extension=".BMP")
         data = decode(Image.open(file))
         if len(data) < 1:
             data = None
         else:
             data = data[0].data
+
+        img = cv2.imread(file, cv2.IMREAD_COLOR)
+        imgs = img.shape
+        if imgs[0] > imgs[1]:
+            b = int(imgs[1] / (imgs[0] / 600))
+            a = 600
+        else:
+            a = int(imgs[0] / (imgs[1] / 600))
+            b = 600
+
+        img = cv2.resize(img, (a, b), interpolation=cv2.INTER_LANCZOS4)
+        cv2.imwrite(file, img)
+
+        with open(file, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read())
+
         tmpFileDel(file)
-        time = datetime.now()
-        current_app.config['DB'].setData(MOD_NAME, g.usr, str.encode(Json['in_blob']), Json['in_blob_type'].strip('"'),
+        current_app.config['DB'].setData(MOD_NAME, g.usr, encoded_string, Json['in_blob_type'].strip('"'),
                                          data, "TXT", time)
-        #return jsonify({
-        #    'in_blob': Json['in_blob'],
-        #    'in_blob_type': Json['in_blob_type'],
-        #    'out_blob': data,
-        #    'out_blob_type': 'txt',
-        #    'crete': time,
-        #    'update': time
-        #})
-        return  jsonify()
+        return jsonify()
     except exc.SQLAlchemyError:
         abort(500)
 
