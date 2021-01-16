@@ -1,8 +1,8 @@
 import base64
 import json
+import time
 from datetime import datetime
 
-import cv2
 from PIL import Image
 from flask import Blueprint, abort, jsonify, g, request, current_app
 from pyzbar.pyzbar import decode
@@ -19,15 +19,25 @@ def QRgetAll():
     try:
         if g.usr is None:
             abort(403)
-        time = datetime.now()
+
+        t = time.time()
         if 'lastupdate' in request.values.dicts:
             res = current_app.config['DB'].getAllData(MOD_NAME, g.usr, request.values.dicts['lastupdate'])
         else:
             res = current_app.config['DB'].getAllData(MOD_NAME, g.usr)
-        json = []
+        j = []
         for obj in res:
-            json.append(obj.toJSON())
-        return jsonify({"Data": json, "TIME": time})
+            j.append(obj.id)
+        return jsonify({"Data": j, "TIME": t})
+
+        #def generate():
+        #    yield '{"TIME":'+str(t)+',"Data":'
+        #    for row in res:
+        #        z = row.toJSON()
+        #        zz = json.dumps(z, indent=4, sort_keys=True, default=str)
+        #        yield zz + ','
+        #    yield '}'
+        #return Response(generate(), mimetype='text')
     except exc.SQLAlchemyError:
         abort(500)
 
@@ -52,17 +62,17 @@ def QRpost():
         else:
             data = data[0].data
 
-        img = cv2.imread(file, cv2.IMREAD_COLOR)
-        imgs = img.shape
-        if imgs[0] > imgs[1]:
-            b = int(imgs[1] / (imgs[0] / 600))
-            a = 600
-        else:
-            a = int(imgs[0] / (imgs[1] / 600))
-            b = 600
+        #img = cv2.imread(file, cv2.IMREAD_COLOR)
+        #imgs = img.shape
+        #if imgs[0] > imgs[1]:
+        #    b = int(imgs[1] / (imgs[0] / 500))
+        #    a = 500
+        #else:
+        #    a = int(imgs[0] / (imgs[1] / 500))
+        #    b = 500
 
-        img = cv2.resize(img, (a, b), interpolation=cv2.INTER_LANCZOS4)
-        cv2.imwrite(file, img)
+        #img = cv2.resize(img, (a, b), interpolation=cv2.INTER_LANCZOS4)
+        #cv2.imwrite(file, img)
 
         with open(file, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read())
@@ -80,7 +90,12 @@ def QRget(id):
     try:
         if g.usr is None:
             abort(403)
-        return jsonify()
+
+        t = time.time()
+
+        res = current_app.config['DB'].getData(MOD_NAME, id, g.usr)
+
+        return jsonify({"Data": res.toJSON(), "TIME": t})
     except exc.SQLAlchemyError:
         abort(500)
 
