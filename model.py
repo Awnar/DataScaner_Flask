@@ -6,6 +6,7 @@ from api.common import validity_deltatime
 
 projektDB = True
 
+
 def SQLClass(db):
     class Logs(db.Model):
         ID = db.Column('ID', db.Integer, primary_key=True)

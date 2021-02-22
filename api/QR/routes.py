@@ -61,15 +61,15 @@ def QRpost():
         else:
             data = data[0].data
 
-        #img = cv2.imread(file, cv2.IMREAD_COLOR)
-        #if img.shape[0] > img.shape[1]:
+        # img = cv2.imread(file, cv2.IMREAD_COLOR)
+        # if img.shape[0] > img.shape[1]:
         #   b = int(200 * img.shape[1] / img.shape[0])
         #   a = 200
-        #else:
+        # else:
         #   a = int(200 * img.shape[0] / img.shape[1])
         #   b = 200
-        #img = cv2.resize(img, (a, b))#, interpolation=cv2.INTER_LANCZOS4)
-        #cv2.imwrite(file, img)
+        # img = cv2.resize(img, (a, b))#, interpolation=cv2.INTER_LANCZOS4)
+        # cv2.imwrite(file, img)
 
         with open(file, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read())
