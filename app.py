@@ -11,8 +11,8 @@ import model
 app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(16)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost:3308/qr?charset=utf8'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost:3308/qr?charset=utf8'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 app.config['DB'] = model.SQLClass(db)()
@@ -46,7 +46,7 @@ def login():
         return jsonify({"ERROR": "Błąd logowania"})
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
     try:
         return api.logout()
@@ -61,12 +61,12 @@ def register():
     except exc.SQLAlchemyError:
         return jsonify({"ERROR": "Błąd rejestracji"})
 
+
 @app.route('/Test', methods=['GET'])
 def test():
-        if g.usr is None:
-            abort(403)
-        return jsonify({"OK": "OK"})
-
+    if g.usr is None:
+        abort(403)
+    return jsonify({"OK": "OK"})
 
 
 if __name__ == '__main__':

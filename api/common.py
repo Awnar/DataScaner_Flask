@@ -47,7 +47,7 @@ def login():
                                               sha256(request.form['pass'].strip("    \"").encode('utf-8')).hexdigest(),
                                               hash, meta)
         if user is None:
-            #abort(403)
+            # abort(403)
             return jsonify({"ERROR": "Taki użytkownik nie istnieje"})
         return jsonify({"Authorization": hash})
 
@@ -55,6 +55,8 @@ def login():
 def logout():
     if g.usr is not None:
         current_app.config['DB'].Logout(request.headers['Authorization'])
+        return {}, 200
+    return {}, 401
 
 
 def register():
@@ -64,7 +66,7 @@ def register():
         abort(406)
 
     tmp = current_app.config['DB'].checkUser(request.form['name'].strip("    \""))
-    if tmp is None:
+    if len(tmp) != 0:
         return jsonify({"ERROR": "Taki użytkownik już istnieje"})
 
     llen = 255 - len(request.form['name'].encode())
@@ -73,10 +75,13 @@ def register():
     hash = sha512(secrets.token_urlsafe(llen).encode() + request.form['name'].encode()).hexdigest()
     meta = {"User-Agent": request.headers["User-Agent"], "IP": request.remote_addr}
 
-    current_app.config['DB'].RegisterAndLogin(request.form['name'].strip("    \""),
-                                              sha256(request.form['pass'].strip("    \"").encode('utf-8')).hexdigest(),
-                                              hash, meta)
-
+    user = current_app.config['DB'].RegisterAndLogin(request.form['name'].strip("    \""),
+                                                     sha256(request.form['pass'].strip("    \"").encode(
+                                                         'utf-8')).hexdigest(),
+                                                     hash, meta)
+    if user is None:
+        # abort(403)
+        return jsonify({"ERROR": "Dodanie użytkownika nie udało się"})
     return jsonify({"Authorization": hash})
 
 
@@ -85,7 +90,7 @@ def tmpFileCreate(data, type="IMG", writemode="wb", extension=""):
     if not os.path.exists(path):
         os.makedirs(path)
 
-    file_path = os.path.join(path, secrets.token_urlsafe(12)+extension)
+    file_path = os.path.join(path, secrets.token_urlsafe(12) + extension)
     f = open(file_path, writemode)
     f.write(data)
     f.close()

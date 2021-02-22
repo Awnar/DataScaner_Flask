@@ -21,23 +21,22 @@ def QRgetAll():
             abort(403)
 
         t = time.time()
-        if 'lastupdate' in request.values.dicts:
-            res = current_app.config['DB'].getAllData(MOD_NAME, g.usr, request.values.dicts['lastupdate'])
+        if 'lastupdate' in request.values:
+            res = current_app.config['DB'].getAllData(MOD_NAME, g.usr, request.values['lastupdate'])
         else:
             res = current_app.config['DB'].getAllData(MOD_NAME, g.usr)
         j = []
         for obj in res:
             j.append(obj.id)
         return jsonify({"Data": j, "TIME": t})
-
-        #def generate():
+        # def generate():
         #    yield '{"TIME":'+str(t)+',"Data":'
         #    for row in res:
         #        z = row.toJSON()
         #        zz = json.dumps(z, indent=4, sort_keys=True, default=str)
         #        yield zz + ','
         #    yield '}'
-        #return Response(generate(), mimetype='text')
+        # return Response(generate(), mimetype='text')
     except exc.SQLAlchemyError:
         abort(500)
 
@@ -63,23 +62,20 @@ def QRpost():
             data = data[0].data
 
         #img = cv2.imread(file, cv2.IMREAD_COLOR)
-        #imgs = img.shape
-        #if imgs[0] > imgs[1]:
-        #    b = int(imgs[1] / (imgs[0] / 500))
-        #    a = 500
+        #if img.shape[0] > img.shape[1]:
+        #   b = int(200 * img.shape[1] / img.shape[0])
+        #   a = 200
         #else:
-        #    a = int(imgs[0] / (imgs[1] / 500))
-        #    b = 500
-
-        #img = cv2.resize(img, (a, b), interpolation=cv2.INTER_LANCZOS4)
+        #   a = int(200 * img.shape[0] / img.shape[1])
+        #   b = 200
+        #img = cv2.resize(img, (a, b))#, interpolation=cv2.INTER_LANCZOS4)
         #cv2.imwrite(file, img)
 
         with open(file, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read())
 
         tmpFileDel(file)
-        current_app.config['DB'].setData(MOD_NAME, g.usr, encoded_string, Json['in_blob_type'].strip('"'),
-                                         data, "TXT", time)
+        current_app.config['DB'].setData(MOD_NAME, g.usr, encoded_string, Json['in_blob_type'], data, "TXT", time)
         return jsonify()
     except exc.SQLAlchemyError:
         abort(500)
@@ -91,11 +87,8 @@ def QRget(id):
         if g.usr is None:
             abort(403)
 
-        t = time.time()
-
         res = current_app.config['DB'].getData(MOD_NAME, id, g.usr)
-
-        return jsonify({"Data": res.toJSON(), "TIME": t})
+        return jsonify(res.toJSON())
     except exc.SQLAlchemyError:
         abort(500)
 
