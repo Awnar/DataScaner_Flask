@@ -12,8 +12,8 @@ def home():
     DATA = {
         'endpoints': {
             0: {
-                'name': 'Template',
-                'url': '/Template'
+                'name': 'Template'
+                #'url': '/Template'
             },
             1: {
                 'name': 'Bar Skaner',
