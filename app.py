@@ -20,9 +20,11 @@ app.config['DB'] = model.SQLClass(db)()
 import api
 from api.QR import api as api_QR
 from api.Template import api as api_Template
+from api.AI import api as api_AI
 
 app.register_blueprint(api_QR, url_prefix='/QR')
 app.register_blueprint(api_Template, url_prefix='/Template')
+app.register_blueprint(api_AI, url_prefix='/AI')
 
 
 @app.route('/')

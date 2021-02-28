@@ -71,11 +71,11 @@ def QRpost():
         # img = cv2.resize(img, (a, b))#, interpolation=cv2.INTER_LANCZOS4)
         # cv2.imwrite(file, img)
 
-        with open(file, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read())
+        #with open(file, "rb") as image_file:
+        #    encoded_string = base64.b64encode(image_file.read())
 
         tmpFileDel(file)
-        current_app.config['DB'].setData(MOD_NAME, g.usr, encoded_string, Json['in_blob_type'], data, "TXT", time)
+        current_app.config['DB'].setData(MOD_NAME, g.usr, str.encode(Json["in_blob"]), Json['in_blob_type'], data, "TXT", time)
         return jsonify()
     except exc.SQLAlchemyError:
         abort(500)

@@ -18,6 +18,10 @@ def home():
             1: {
                 'name': 'Bar Skaner',
                 'url': '/QR'
+            },
+            2: {
+                'name': 'AI',
+                'url': '/AI'
             }
         }
     }
