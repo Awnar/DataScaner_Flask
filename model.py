@@ -133,7 +133,7 @@ def SQLClass(db):
 
         @event.listens_for(Users, "after_insert")
         def logout_old_token(mapper, connection, user):
-            log = Logs(user.id, "Data", "Dodano użytkownika " + user.name)
+            log = Logs(user.ID, "Data", "Dodano użytkownika " + user.name)
             db.session.add(log)
             db.session.commit()
 
